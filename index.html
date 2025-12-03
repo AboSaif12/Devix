@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEVIX Store - متجر ديفيكس الاحترافي</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-bolt"></i>
+                <span>DEVIX</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li><a href="#products"><i class="fas fa-box"></i> المنتجات</a></li>
+                <li><a href="#about"><i class="fas fa-info-circle"></i> من نحن</a></li>
+                <li><a href="#contact"><i class="fas fa-envelope"></i> اتصل بنا</a></li>
+            </ul>
+            <div class="header-actions">
+                <button class="account-btn" onclick="openAuthModal()" id="accountBtn">
+                    <i class="fas fa-user"></i>
+                    <span>تسجيل الدخول</span>
+                </button>
+                <button class="cart-btn" onclick="toggleCart()">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>السلة</span>
+                    <span class="cart-count">0</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="animate-text">مرحباً بك في <span class="gradient-text">DEVIX</span></h1>
+                <p>متجرك الإلكتروني الاحترافي - تجربة تسوق فريدة ومتطورة</p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="scrollToProducts()">
+                        <i class="fas fa-shopping-bag"></i>
+                        تسوق الآن
+                    </button>
+                    <button class="btn-secondary" onclick="openAuthModal()">
+                        <i class="fab fa-discord"></i>
+                        ربط Discord
+                    </button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="floating-card">
+                    <i class="fas fa-shopping-bag"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="feature-card">
+                <i class="fas fa-shield-alt"></i>
+                <h3>دفع آمن 100%</h3>
+                <p>معاملات مشفرة وآمنة</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-truck"></i>
+                <h3>شحن سريع</h3>
+                <p>توصيل لجميع المدن</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-headset"></i>
+                <h3>دعم 24/7</h3>
+                <p>فريق الدعم متاح دائماً</p>
+            </div>
+            <div class="feature-card">
+                <i class="fab fa-discord"></i>
+                <h3>ربط Discord</h3>
+                <p>إشعارات فورية</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products-section" id="products">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="gradient-text">منتجاتنا المميزة</span>
+            </h2>
+            <div class="products-grid" id="productsGrid"></div>
+        </div>
+    </section>
+
+    <!-- Cart Modal -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content cart-modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-shopping-cart"></i> سلة التسوق</h2>
+                <button class="close-btn" onclick="toggleCart()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="cartItems"></div>
+            </div>
+            <div class="modal-footer">
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span>المجموع الفرعي:</span>
+                        <span id="subtotal">0 ريال</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>الشحن:</span>
+                        <span>50 ريال</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>المجموع الكلي:</span>
+                        <span id="cartTotal">50 ريال</span>
+                    </div>
+                </div>
+                <button class="btn-checkout" onclick="proceedToCheckout()">
+                    <i class="fas fa-credit-card"></i>
+                    إتمام الطلب
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-content auth-modal-content">
+            <div class="modal-header">
+                <h2 id="authTitle"><i class="fas fa-user-plus"></i> إنشاء حساب</h2>
+                <button class="close-btn" onclick="closeAuthModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="auth-tabs">
+                    <button class="tab-btn active" onclick="switchTab('register')">إنشاء حساب</button>
+                    <button class="tab-btn" onclick="switchTab('login')">تسجيل الدخول</button>
+                </div>
+                
+                <!-- Register Form -->
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> الاسم الكامل</label>
+                        <input type="text" id="regName" placeholder="أدخل اسمك الكامل" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
+                        <input type="email" id="regEmail" placeholder="example@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> رقم الجوال</label>
+                        <input type="tel" id="regPhone" placeholder="05xxxxxxxx" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> كلمة المرور</label>
+                        <input type="password" id="regPassword" placeholder="كلمة مرور قوية" required>
+                    </div>
+                    <div class="discord-connect">
+                        <button type="button" class="btn-discord" onclick="connectDiscord('register')">
+                            <i class="fab fa-discord"></i>
+                            ربط حساب Discord
+                        </button>
+                        <p class="discord-status" id="discordStatusReg">غير مربوط</p>
+                    </div>
+                    <button type="submit" class="btn-primary btn-block">
+                        <i class="fas fa-user-plus"></i>
+                        إنشاء حساب
+                    </button>
+                </form>
+
+                <!-- Login Form -->
+                <form id="loginForm" class="auth-form" style="display: none;">
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
+                        <input type="email" id="loginEmail" placeholder="example@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> كلمة المرور</label>
+                        <input type="password" id="loginPassword" placeholder="كلمة المرور" required>
+                    </div>
+                    <button type="submit" class="btn-primary btn-block">
+                        <i class="fas fa-sign-in-alt"></i>
+                        تسجيل الدخول
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content payment-modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-credit-card"></i> بوابة الدفع الآمنة</h2>
+                <button class="close-btn" onclick="closePaymentModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="paymentFormContainer">
+                    <div class="payment-methods">
+                        <button class="payment-method-btn active" onclick="selectPaymentMethod('visa')">
+                            <i class="fab fa-cc-visa"></i>
+                            <span>Visa</span>
+                        </button>
+                        <button class="payment-method-btn" onclick="selectPaymentMethod('mastercard')">
+                            <i class="fab fa-cc-mastercard"></i>
+                            <span>Mastercard</span>
+                        </button>
+                        <button class="payment-method-btn" onclick="selectPaymentMethod('mada')">
+                            <i class="fas fa-credit-card"></i>
+                            <span>مدى</span>
+                        </button>
+                        <button class="payment-method-btn" onclick="selectPaymentMethod('apple')">
+                            <i class="fab fa-apple-pay"></i>
+                            <span>Apple Pay</span>
+                        </button>
+                    </div>
+
+                    <form id="paymentForm" class="payment-form">
+                        <div class="form-group">
+                            <label><i class="fas fa-credit-card"></i> رقم البطاقة</label>
+                            <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" required>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> اسم حامل البطاقة</label>
+                            <input type="text" id="cardName" placeholder="الاسم كما في البطاقة" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label><i class="fas fa-calendar"></i> تاريخ الانتهاء</label>
+                                <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5" required>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-lock"></i> CVV</label>
+                                <input type="text" id="cardCVV" placeholder="123" maxlength="3" required>
+                            </div>
+                        </div>
+                        <div class="payment-total">
+                            <span>المبلغ الإجمالي:</span>
+                            <span class="amount" id="paymentAmount">0 ريال</span>
+                        </div>
+                        <button type="submit" class="btn-pay">
+                            <i class="fas fa-lock"></i>
+                            دفع آمن
+                        </button>
+                    </form>
+                </div>
+
+                <div id="paymentSuccess" class="payment-success" style="display: none;">
+                    <div class="success-animation">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>تم الدفع بنجاح!</h3>
+                    <p>شكراً لك، تم استلام طلبك وسيتم معالجته قريباً</p>
+                    <p class="order-number">رقم الطلب: <span id="orderNumber"></span></p>
+                    <button class="btn-primary" onclick="closePaymentSuccess()">
+                        <i class="fas fa-home"></i>
+                        العودة للرئيسية
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3><i class="fas fa-bolt"></i> DEVIX</h3>
+                    <p>متجرك الإلكتروني الاحترافي لأفضل المنتجات التقنية</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>روابط سريعة</h4>
+                    <ul>
+                        <li><a href="#home">الرئيسية</a></li>
+                        <li><a href="#products">المنتجات</a></li>
+                        <li><a href="#about">من نحن</a></li>
+                        <li><a href="#contact">اتصل بنا</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>خدمة العملاء</h4>
+                    <ul>
+                        <li><a href="#">سياسة الخصوصية</a></li>
+                        <li><a href="#">الشروط والأحكام</a></li>
+                        <li><a href="#">سياسة الاسترجاع</a></li>
+                        <li><a href="#">الدعم الفني</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>تواصل معنا</h4>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-phone"></i> +966 50 123 4567</li>
+                        <li><i class="fas fa-envelope"></i> info@devix.store</li>
+                        <li><i class="fas fa-map-marker-alt"></i> الرياض، السعودية</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 DEVIX Store. جميع الحقوق محفوظة</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
