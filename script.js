@@ -401,7 +401,7 @@ function logout() {
 // ======================================
 
 function connectDiscord(context) {
-    const redirectUri = encodeURIComponent(window.location.origin);
+    const redirectUri = encodeURIComponent("https://abosaif12.github.io/Devix/");
     const clientId = "1377336841929232494";
 
     // حفظ السياق (تسجيل أو دخول)
