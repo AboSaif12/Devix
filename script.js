@@ -401,20 +401,67 @@ function logout() {
 // ======================================
 
 function connectDiscord(context) {
-    // Simulate Discord OAuth
-    const mockDiscordId = `DISCORD_${Math.random().toString(36).substr(2, 9)}`;
-    discordLinked = mockDiscordId;
-    
-    const statusElement = document.getElementById(context === 'register' ? 'discordStatusReg' : 'discordStatusLogin');
-    if (statusElement) {
-        statusElement.textContent = '✅ تم الربط بنجاح';
-        statusElement.classList.add('connected');
+    const redirectUri = encodeURIComponent(window.location.origin);
+    const clientId = "1377336841929232494";
+
+    // حفظ السياق (تسجيل أو دخول)
+    localStorage.setItem("discord_oauth_context", context);
+
+    // تحويل المستخدم إلى صفحة OAuth الحقيقية
+    window.location.href =
+        `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=identify`;
+}
+
+function checkDiscordCallback() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get("code");
+
+    if (!code) return; // المستخدم ليس عائدًا من Discord
+
+    handleDiscordCallback(code);
+}
+
+
+async function handleDiscordCallback(code) {
+    try {
+        showToast('⏳ جاري ربط حساب Discord...', 'info');
+
+        const response = await fetch(`${CONFIG.API_BASE_URL}/auth/discord/callback`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code })
+        });
+
+        const data = await response.json();
+
+        if (!data.success) throw new Error(data.error);
+
+        // حفظ بيانات المستخدم من Discord
+        discordLinked = data.discordUser.id;
+        localStorage.setItem("discord_user", JSON.stringify(data.discordUser));
+
+        // استرجاع السياق
+        const context = localStorage.getItem("discord_oauth_context");
+
+        const statusElement = document.getElementById(
+            context === 'register' ? 'discordStatusReg' : 'discordStatusLogin'
+        );
+
+        if (statusElement) {
+            statusElement.textContent =
+                `✅ تم الربط: ${data.discordUser.username}#${data.discordUser.discriminator}`;
+            statusElement.classList.add("connected");
+        }
+
+        showToast("✅ تم ربط حساب Discord بنجاح!");
+
+        // إزالة الكود من الرابط
+        window.history.replaceState({}, document.title, window.location.pathname);
+
+    } catch (err) {
+        console.error(err);
+        showToast("❌ فشل ربط Discord: " + err.message, "error");
     }
-    
-    showToast('✅ تم ربط Discord بنجاح!');
-    
-    // In production, use real Discord OAuth:
-    window.location.href = `https://discord.com/api/oauth2/authorize?client_id=1377336841929232494&redirect_uri=${encodeURIComponent(window.location.origin)}&response_type=code&scope=identify`;
 }
 
 async function sendDiscordNotification(data) {
