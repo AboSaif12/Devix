@@ -414,7 +414,7 @@ function connectDiscord(context) {
     showToast('✅ تم ربط Discord بنجاح!');
     
     // In production, use real Discord OAuth:
-    // window.location.href = `https://discord.com/api/oauth2/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=${encodeURIComponent(window.location.origin)}&response_type=code&scope=identify`;
+    window.location.href = `https://discord.com/api/oauth2/authorize?client_id=1377336841929232494&redirect_uri=${encodeURIComponent(window.location.origin)}&response_type=code&scope=identify`;
 }
 
 async function sendDiscordNotification(data) {
